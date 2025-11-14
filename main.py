@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk as ttk
 import time
 import pyglet
 import threading
@@ -14,12 +15,23 @@ class Pomodoro:
         self.minutes = 0
         self.seconds = 0
         self.running = False
+        self.cycles = 2
+        self.longBreak  = 0
+        self.shortBreak = 0
 
-        self.label = tk.Label(master, text="1:00", font=(font_name, 25))
-        self.label.pack(pady=20)
+        self.label1 = tk.Label(master, text="1:00", font=(font_name, 25))
         #tk.Button(master, text="1", comm)
-        tk.Button(master, text="Start", command=self.start).pack(side="left", padx=20)
-        tk.Button(master, text="Reset", command=self.reset).pack(side="right", padx=20)
+        studyTimer1Button = ttk.Button(master, text="1", command=self.setTime1)
+        studyTimer2Button = ttk.Button(master, text="2", command=self.setTime2)
+        studyTimer3Button = ttk.Button(master, text="3", command=self.setTime3)
+        startButton = tk.Button(master, text="Start", command=self.start)
+        resetButton = tk.Button(master, text="Reset", command=self.reset)
+        self.label1.grid(row=0, column=2)
+        studyTimer1Button.grid(row = 1, column= 1)
+        studyTimer2Button.grid(row=1, column=2)
+        studyTimer3Button.grid(row=1, column=3)
+        startButton.grid(row = 4, column=1)
+        resetButton.grid(row=4, column=3)
 
 
     def start(self):
@@ -29,12 +41,14 @@ class Pomodoro:
 
 
     def countdown(self):
-        total = self.minutes * 60 + self.seconds
-        while total >= 0 and self.running:
-            mins, secs = divmod(total, 60)
-            self.label.config(text=f"{mins:02}:{secs:02}")
-            time.sleep(1)
-            total -= 1
+        studyTotal = self.minutes * 60 + self.seconds
+        for x in self.cycles:
+            while studyTotal >= 0 and self.running:
+                mins, secs = divmod(total, 60)
+                self.label1.config(text=f"{mins:02}:{secs:02}")
+                time.sleep(1)
+                total -= 1
+            self.cycles -=1
         self.running = False
 
     def reset(self):
