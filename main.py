@@ -12,7 +12,7 @@ class Pomodoro:
         self.master = master
         master.title  = ("Productivity Jam")
 
-        self.minutes = 0
+        self.studyTime = 0
         self.minutesText = tk.StringVar()
         self.seconds = 0
         self.running = False
@@ -30,27 +30,44 @@ class Pomodoro:
 
 
 
-        #tk.Button(master, text="1", comm)
-        studyTimer1Button = ttk.Button(master, text="1 Minute", command=self.setTime1)
-        studyTimer2Button = ttk.Button(master, text="2 Minutes", command=self.setTime2)
-        studyTimer3Button = ttk.Button(master, text="3 Minutes", command=self.setTime3)
+        #Buttons for selecting short break time
+        shortBreakTimeButton1 = ttk.Button(master, text="4 Minutes", command=lambda: self.setShortBreakTime(4))
+        shortBreakTimeButton2 = ttk.Button(master, text="5 Minutes", command=lambda: self.setShortBreakTime(5))
+        shortBreakTimeButton3 = ttk.Button(master, text="6 Minutes", command=lambda: self.setShortBreakTime(6))
+
+        #Buttons for selecting long break time
+        longBreakTimeButton1 = ttk.Button(master, text="15 Minutes", command=lambda: self.setLongBreakTime(15))
+        longBreakTimeButton2 = ttk.Button(master, text="20 Minutes", command=lambda: self.setLongBreakTime(20))
+        longBreakTimeButton3 = ttk.Button(master, text="25 Minutes", command=lambda: self.setLongBreakTime(25))
+
+
+        #Buttons for selecting number of study cycles
         studyCyclesButton1 = ttk.Button(master, text="3 Cycles", command=lambda: self.setCycles(3))
         studyCyclesButton2 = ttk.Button(master, text="4 Cycles", command=lambda: self.setCycles(4))
         studyCyclesButton3 = ttk.Button(master, text="5 Cycles", command=lambda: self.setCycles(5))
+
+
         startButton = tk.Button(master, text="Start", command=self.start)
         resetButton = tk.Button(master, text="Reset", command=self.reset)
         self.timeLabel.grid(row=0, column=2)
         self.label2.grid(row=1, column=2)
 
-        studyLabel.grid(row=2, column=1)
-        studyTimer1Button.grid(row = 2, column= 2)
-        studyTimer2Button.grid(row=2, column=3)
-        studyTimer3Button.grid(row=2, column=4)
+        cyclesLabel.grid(row=2, column=1)
+        studyCyclesButton1.grid(row=2, column=2)
+        studyCyclesButton2.grid(row=2, column=3)
+        studyCyclesButton3.grid(row=2, column=4)
 
-        cyclesLabel.grid(row=3, column=1)
-        studyCyclesButton1.grid(row=3, column=2)
-        studyCyclesButton2.grid(row=3, column=3)
-        studyCyclesButton3.grid(row=3, column=4)
+        shortBreakLabel.grid(row=3, column=1)
+        shortBreakTimeButton1.grid(row = 3, column= 2)
+        shortBreakTimeButton2.grid(row=3, column=3)
+        shortBreakTimeButton3.grid(row=3, column=4)
+
+        longBreakLabel.grid(row=4, column=1)
+        shortBreakTimeButton1.grid(row = 4, column= 2)
+        shortBreakTimeButton2.grid(row=4, column=3)
+        shortBreakTimeButton3.grid(row=4, column=4)
+
+       
 
 
         startButton.grid(row = 4, column=1)
@@ -64,9 +81,24 @@ class Pomodoro:
 
 
     def countdown(self):
-        studyTotal = self.minutes * 60
-    
+        studyTotal = self.studyTime * 60
+        shortBreakTotal = self.shortBreak * 60
+        longBreakTotal = self.longBreak * 60
+
+
         for x in range(self.cycles):
+            while studyTotal >= 0 and self.running:
+                mins, secs = divmod(studyTotal, 60)
+                self.timeLabel.config(text=f"{mins:02}:{secs:02}")
+                time.sleep(1)
+                studyTotal -= 1
+            studyTotal = self.minutes * 60
+            while shortBreakTotal >= 0 and self.running:
+                mins, secs = divmod(studyTotal, 60)
+                self.timeLabel.config(text=f"{mins:02}:{secs:02}")
+                time.sleep(1)
+                studyTotal -= 1
+            shortBreakTotal = self.shortBreak * 60
             while studyTotal >= 0 and self.running:
                 mins, secs = divmod(studyTotal, 60)
                 self.timeLabel.config(text=f"{mins:02}:{secs:02}")
@@ -82,18 +114,13 @@ class Pomodoro:
         self.minutes, self.seconds = 1, 0
         self.timeLabel.config(text="0:00")
 
-    def setTime1(self):
-        self.minutes = 1
-        self.minutesText.set("1")
-    
-    def setTime2(self):
-        self.minutes = 2
-        self.minutesText.set("2")
+    def setShortBreakTime(self, value):
+        self.shortBreak = value
+        #self.minutesText.set(value)
 
-    def setTime3(self):
-        self.minutes = 3
-        self.minutesText.set("3")
-
+    def setLongBreakTime(self, value):
+        self.longBreak = value
+        #self.minutesText.set(value)
     
     def setCycles(self,value):
         self.cycles = value
